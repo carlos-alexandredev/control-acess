@@ -11,7 +11,7 @@ projeto inclui:
   go‑live em `docs/`.
 - **Testes automatizados**: conjunto de testes unitários em `tests/`
   utilizando mocks para simular o equipamento.
-- **Coleção Postman**: exemplo de requisiões agrupadas para testar o
+- **Coleção Postman**: exemplo de requisições agrupadas para testar o
   equipamento manualmente (`postman/controlid_collection.json`).
 
 ## Estrutura

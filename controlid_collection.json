@@ -1,0 +1,229 @@
+{
+  "info": {
+    "name": "ControlID Integration API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"login\": \"{{login}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/login.fcgi",
+          "host": ["{{base_url}}"],
+          "path": ["login.fcgi"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"object\": \"users\",\n  \"values\": [\n    {\n      \"registration\": \"{{user_registration}}\",\n      \"name\": \"{{user_name}}\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/create_objects.fcgi?session={{session}}",
+          "host": ["{{base_url}}"],
+          "path": ["create_objects.fcgi"],
+          "query": [
+            {"key": "session", "value": "{{session}}"}
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"object\": \"users\",\n  \"values\": {\n    \"name\": \"{{updated_name}}\"\n  },\n  \"where\": {\n    \"users\": {\"id\": {{user_id}}}\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/modify_objects.fcgi?session={{session}}",
+          "host": ["{{base_url}}"],
+          "path": ["modify_objects.fcgi"],
+          "query": [
+            {"key": "session", "value": "{{session}}"}
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"object\": \"users\",\n  \"where\": {\n    \"users\": {\"id\": {{user_id}}}\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/destroy_objects.fcgi?session={{session}}",
+          "host": ["{{base_url}}"],
+          "path": ["destroy_objects.fcgi"],
+          "query": [
+            {"key": "session", "value": "{{session}}"}
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Users",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"object\": \"users\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/load_objects.fcgi?session={{session}}",
+          "host": ["{{base_url}}"],
+          "path": ["load_objects.fcgi"],
+          "query": [
+            {"key": "session", "value": "{{session}}"}
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Set User Image",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/octet-stream"}
+        ],
+        "body": {
+          "mode": "file",
+          "file": {
+            "src": "<PATH_TO_IMAGE>"
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/user_set_image.fcgi?session={{session}}&user_id={{user_id}}&timestamp={{timestamp}}&match=1",
+          "host": ["{{base_url}}"],
+          "path": ["user_set_image.fcgi"],
+          "query": [
+            {"key": "session", "value": "{{session}}"},
+            {"key": "user_id", "value": "{{user_id}}"},
+            {"key": "timestamp", "value": "{{timestamp}}"},
+            {"key": "match", "value": "1"}
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List User Images",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/user_list_images.fcgi?session={{session}}&get_timestamp=1",
+          "host": ["{{base_url}}"],
+          "path": ["user_list_images.fcgi"],
+          "query": [
+            {"key": "session", "value": "{{session}}"},
+            {"key": "get_timestamp", "value": "1"}
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User Image List",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_ids\": [{{user_id}}]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/user_get_image_list.fcgi?session={{session}}",
+          "host": ["{{base_url}}"],
+          "path": ["user_get_image_list.fcgi"],
+          "query": [
+            {"key": "session", "value": "{{session}}"}
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Set User Image List",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"match\": 1,\n  \"user_images\": [\n    {\n      \"user_id\": {{user_id}},\n      \"timestamp\": {{timestamp}},\n      \"image\": \"<BASE64_IMAGE>\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/user_set_image_list.fcgi?session={{session}}",
+          "host": ["{{base_url}}"],
+          "path": ["user_set_image_list.fcgi"],
+          "query": [
+            {"key": "session", "value": "{{session}}"}
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete User Image",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": {{user_id}}\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/user_destroy_image.fcgi?session={{session}}",
+          "host": ["{{base_url}}"],
+          "path": ["user_destroy_image.fcgi"],
+          "query": [
+            {"key": "session", "value": "{{session}}"}
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": []
+}
