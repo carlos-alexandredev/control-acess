@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Gestor de Controle de Acesso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 1rem;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 0.4rem;
+            margin-bottom: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 0.6rem 1rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #007bff;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestor de Controle iD</h1>
+
+    <section>
+        <h2>Criar Usuário</h2>
+        <form id="create-form">
+            <label>
+                Registro:
+                <input type="text" id="reg" required />
+            </label>
+            <label>
+                Nome:
+                <input type="text" id="name" required />
+            </label>
+            <button type="submit">Criar</button>
+            <div class="result" id="create-result"></div>
+        </form>
+    </section>
+
+    <section>
+        <h2>Enviar Foto Facial</h2>
+        <form id="image-form" enctype="multipart/form-data">
+            <label>
+                Registro:
+                <input type="text" id="reg-image" required />
+            </label>
+            <label>
+                Foto:
+                <input type="file" id="file" accept="image/*" required />
+            </label>
+            <button type="submit">Enviar Foto</button>
+            <div class="result" id="image-result"></div>
+        </form>
+    </section>
+
+    <script>
+        // Handler for create user form
+        document.getElementById("create-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const registration = document.getElementById("reg").value;
+            const name = document.getElementById("name").value;
+            const resultDiv = document.getElementById("create-result");
+            resultDiv.textContent = "Processando…";
+            try {
+                const response = await fetch("/api/users", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ registration: registration, name: name }),
+                });
+                const text = await response.text();
+                resultDiv.textContent = text;
+            } catch (err) {
+                resultDiv.textContent = "Erro: " + err;
+            }
+        });
+
+        // Handler for image upload form
+        document.getElementById("image-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const registration = document.getElementById("reg-image").value;
+            const fileInput = document.getElementById("file");
+            const resultDiv = document.getElementById("image-result");
+            resultDiv.textContent = "Processando…";
+            const formData = new FormData();
+            if (fileInput.files.length === 0) {
+                resultDiv.textContent = "Selecione um arquivo de imagem.";
+                return;
+            }
+            formData.append("file", fileInput.files[0]);
+            try {
+                const response = await fetch(`/api/users/${encodeURIComponent(registration)}/image`, {
+                    method: "POST",
+                    body: formData,
+                });
+                const text = await response.text();
+                resultDiv.textContent = text;
+            } catch (err) {
+                resultDiv.textContent = "Erro: " + err;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,91 +1,53 @@
-# Sistema de Integração Control iD
+# Backend – Control iD Integration API
 
-Este repositório contém uma implementação de referência para integrar um sistema
-web à API de controle de acesso da Control iD (linha Acesso / iDFace). O
-projeto inclui:
+Este diretório contém um servidor simples em Python usando Flask que
+exponibiliza as principais operações da biblioteca cliente `controlid_system`
+via uma API REST. Ele serve como exemplo de como integrar a Control iD com
+um sistema web backend e pode ser usado como base para o desenvolvimento
+de sua própria API.
 
-- **Cliente Python (`controlid_client.py`)**: biblioteca que encapsula as
-  operações de autenticação, CRUD de usuários/grupos, envio de fotos e
-  outras chamadas necessárias.
-- **Documentação**: resumo da API, documento de arquitetura e checklist de
-  go‑live em `docs/`.
-- **Testes automatizados**: conjunto de testes unitários em `tests/`
-  utilizando mocks para simular o equipamento.
-- **Coleção Postman**: exemplo de requisições agrupadas para testar o
-  equipamento manualmente (`postman/controlid_collection.json`).
+## Requisitos
 
-## Estrutura
-
-```
-controlid_system/
-├── client/
-│   ├── __init__.py
-│   └── controlid_client.py     # implementação principal
-├── docs/
-│   ├── summary_api.md          # resumo dos endpoints e objetos
-│   ├── architecture.md         # documento de arquitetura com diagramas mermaid
-│   └── go_live_checklist.md    # lista de verificação para entrada em produção
-├── tests/
-│   └── test_client.py          # testes unitários utilizando unittest
-├── postman/
-│   └── controlid_collection.json
-└── README.md                   # este arquivo
-```
-
-## Instalação
-
-Requer Python ≥ 3.8 e o pacote `requests`. Para instalar em ambiente virtual:
+* Python 3.11 ou superior.
+* Instalar as dependências:
 
 ```bash
-python -m venv venv
-source venv/bin/activate
-pip install requests
+pip install flask requests
 ```
 
-## Uso básico
+Para desenvolver com a biblioteca local `controlid_system`, certifique‑se de
+que o diretório `controlid_system` esteja no `PYTHONPATH` ou instale‑o via
+`pip install -e .` na raiz do repositório.
 
-```python
-from controlid_system.client import ControlIDClient
+## Configuração
 
-# Endereço do equipamento e credenciais (geralmente admin/admin na fábrica)
-client = ControlIDClient(base_url="http://192.168.0.10", login="admin", password="admin")
+Defina as seguintes variáveis de ambiente conforme seu equipamento:
 
-# Criar um usuário
-user_id = client.create_user(registration="1234", name="Fulano de Tal")
+* `CONTROLID_BASE_URL`: URL do equipamento Control iD (ex.: `http://192.168.0.10`).
+* `CONTROLID_LOGIN` e `CONTROLID_PASSWORD`: credenciais de acesso.
+* (Opcional) `HOST` e `PORT`: endereço e porta em que o servidor Flask irá escutar (padrão `0.0.0.0:5000`).
 
-# Atualizar o nome
-client.update_user(user_id, name="Fulano de Souza")
+## Uso
 
-# Enviar foto
-client.set_user_image(user_id, "/caminho/para/foto.jpg")
-
-# Listar usuários que possuem fotos
-print(client.list_user_images())
-
-# Excluir usuário
-client.delete_user(user_id)
-```
-
-## Testes
-
-Execute os testes unitários com:
+Execute o servidor com:
 
 ```bash
-cd controlid_system
-python -m unittest discover tests
+python backend/app.py
 ```
 
-## Coleção Postman
+Ele iniciará em `http://localhost:5000/`. Principais endpoints:
 
-A coleção `postman/controlid_collection.json` pode ser importada no Postman ou
-Insomnia. Defina as variáveis de ambiente `base_url`, `login`, `password` e
-`session` (este último será preenchido manualmente após o login) para testar
-os principais endpoints.
+* `POST /api/users` – cria usuário. Corpo JSON: `{ "registration": "...", "name": "..." }`.
+* `PUT /api/users/{registration}` – atualiza usuário. Corpo JSON com campos a alterar.
+* `DELETE /api/users/{registration}` – remove usuário.
+* `POST /api/users/{registration}/image` – envia foto. Envie arquivo no campo `file` (multipart/form-data).
+* `GET /api/users` – lista mapeamento de usuários locais → IDs no dispositivo.
 
-## Próximos passos
+## Observações
 
-Este projeto oferece uma base para o MVP. Extensões futuras incluem:
+Este servidor utiliza um dicionário em memória (`user_map`) para mapear
+registros locais aos IDs gerados pelo equipamento. Em um ambiente real,
+substitua essa estrutura por um banco de dados persistente.
 
-- Suporte a captura de eventos de acesso via monitor/push.
-- Interfaces CLI/GUI para administração.
-- Empacotamento como serviço Docker.
+O backend não implementa autenticação própria; considere adicionar camadas
+de segurança (tokens JWT, sessões, etc.) conforme a necessidade do seu projeto.
